@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fake News Detector — AI Powered</title>
+  <link rel="stylesheet" href="static/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ══════════════════ NAVBAR ══════════════════ -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="nav-icon">📰</span>
+      <span>FakeGuard <span class="nav-badge">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#detector">Detector</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#about">About</a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🤖 Machine Learning Powered</div>
+      <h1>Detect Fake News<br /><span class="gradient-text">Instantly with AI</span></h1>
+      <p class="hero-sub">
+        Paste any news article or headline below. Our trained ML model analyses
+        thousands of linguistic patterns to tell you if it's real or fabricated —
+        in under a second.
+      </p>
+      <div class="stats-row">
+        <div class="stat"><span class="stat-val" id="statAcc">98%+</span><span class="stat-lbl">Accuracy</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-val">44K+</span><span class="stat-lbl">Training Articles</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-val">&lt;1s</span><span class="stat-lbl">Response Time</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-val">4</span><span class="stat-lbl">ML Models Compared</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ DETECTOR ══════════════════ -->
+  <section class="detector-section" id="detector">
+    <div class="container">
+      <div class="detector-card">
+
+        <!-- Input -->
+        <div class="input-area">
+          <label class="input-label">PASTE YOUR NEWS ARTICLE OR HEADLINE</label>
+          <textarea
+            id="newsInput"
+            placeholder="e.g. Scientists confirm new vaccine is 95% effective in phase-3 clinical trials published in The Lancet…"
+            rows="7"
+          ></textarea>
+          <div class="input-footer">
+            <span class="char-count" id="charCount">0 words</span>
+            <div class="btn-group">
+              <button class="btn-clear" id="clearBtn" onclick="clearAll()">✕ Clear</button>
+              <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">
+                <span id="btnText">🔍 Analyze Article</span>
+                <span id="btnSpinner" class="btn-spinner hidden"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-box hidden" id="resultBox">
+          <div class="result-header" id="resultHeader">
+            <div class="verdict-icon" id="verdictIcon"></div>
+            <div>
+              <div class="verdict-text" id="verdictText"></div>
+              <div class="verdict-sub"  id="verdictSub"></div>
+            </div>
+          </div>
+
+          <div class="prob-bars">
+            <div class="prob-row">
+              <div class="prob-label">
+                <span>🔴 Fake Probability</span>
+                <span class="prob-pct fake-pct" id="fakePct">—</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-fake" id="fakeBar" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="prob-row">
+              <div class="prob-label">
+                <span>🟢 Real Probability</span>
+                <span class="prob-pct real-pct" id="realPct">—</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill bar-real" id="realBar" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-meta">
+            <span class="meta-pill" id="metaWords"></span>
+            <span class="meta-pill" id="metaConf"></span>
+            <span class="meta-pill" id="metaModel">Model: Logistic Regression</span>
+          </div>
+        </div>
+
+        <!-- Samples -->
+        <div class="samples-area">
+          <div class="samples-label">TRY A SAMPLE ARTICLE</div>
+          <div class="samples-grid">
+            <div class="sample-card sample-real" onclick="loadSample(this)">
+              <span class="sample-badge badge-real">REAL</span>
+              <p>Federal Reserve raises interest rates by 25 basis points following the FOMC meeting, citing persistent inflation pressures in the economy.</p>
+            </div>
+            <div class="sample-card sample-fake" onclick="loadSample(this)">
+              <span class="sample-badge badge-fake">FAKE</span>
+              <p>SHOCKING: Government secretly puts mind-control chemicals in tap water! Share before they delete this exposé! Wake up, the media won't tell you this!</p>
+            </div>
+            <div class="sample-card sample-real" onclick="loadSample(this)">
+              <span class="sample-badge badge-real">REAL</span>
+              <p>Scientists publish new peer-reviewed study linking Mediterranean diet to a 30% reduced risk of cardiovascular disease in adults over 50.</p>
+            </div>
+            <div class="sample-card sample-fake" onclick="loadSample(this)">
+              <span class="sample-badge badge-fake">FAKE</span>
+              <p>EXCLUSIVE: Aliens have landed in Nevada and the Pentagon is hiding the truth! Whistleblower leaks classified documents — deep state panic!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ HOW IT WORKS ══════════════════ -->
+  <section class="how-section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-sub">Four steps from raw text to verified prediction</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon">🧹</div>
+          <h3>Text Cleaning</h3>
+          <p>URLs, HTML tags, punctuation, and stop-words are removed. Text is lowercased and normalised for consistent analysis.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">📊</div>
+          <h3>TF-IDF Vectorisation</h3>
+          <p>The cleaned text is converted into a 50,000-dimensional numerical feature vector using Term Frequency–Inverse Document Frequency with bigrams.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">🤖</div>
+          <h3>ML Classification</h3>
+          <p>A trained Logistic Regression classifier — selected from four models — analyses the feature vector and predicts FAKE or REAL with a confidence score.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div class="step-icon">📈</div>
+          <h3>Result &amp; Confidence</h3>
+          <p>The prediction, class probabilities, and confidence percentage are returned instantly and displayed as an interactive visualisation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ MODEL STATS ══════════════════ -->
+  <section class="models-section">
+    <div class="container">
+      <h2 class="section-title">Model Comparison</h2>
+      <p class="section-sub">All four classifiers trained and evaluated on 44,000+ articles</p>
+      <div class="models-table">
+        <div class="model-row model-header">
+          <span>Algorithm</span><span>Accuracy</span><span>Speed</span><span>Status</span>
+        </div>
+        <div class="model-row model-winner">
+          <span>⭐ Logistic Regression</span>
+          <span><div class="acc-bar"><div class="acc-fill" style="width:98.7%"></div></div>98.7%</span>
+          <span class="tag-fast">Fast</span>
+          <span class="tag-deployed">Deployed</span>
+        </div>
+        <div class="model-row">
+          <span>Passive Aggressive</span>
+          <span><div class="acc-bar"><div class="acc-fill" style="width:99.1%"></div></div>99.1%</span>
+          <span class="tag-fast">Fast</span>
+          <span class="tag-tested">Tested</span>
+        </div>
+        <div class="model-row">
+          <span>Naive Bayes</span>
+          <span><div class="acc-bar"><div class="acc-fill" style="width:95.8%"></div></div>95.8%</span>
+          <span class="tag-fast">Fastest</span>
+          <span class="tag-tested">Tested</span>
+        </div>
+        <div class="model-row">
+          <span>Random Forest</span>
+          <span><div class="acc-bar"><div class="acc-fill" style="width:98.9%"></div></div>98.9%</span>
+          <span class="tag-slow">Slower</span>
+          <span class="tag-tested">Tested</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ ABOUT ══════════════════ -->
+  <section class="about-section" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <h2>About This Project</h2>
+          <p>FakeGuard is an open-source fake news detection system built with Python and scikit-learn. It was trained on the <strong>Fake and Real News Dataset</strong> (Kaggle) containing over 44,000 labelled news articles.</p>
+          <p>The system uses <strong>TF-IDF feature extraction</strong> combined with <strong>Logistic Regression</strong> to achieve 98%+ accuracy. The backend is served as a serverless <strong>Netlify Function</strong>, making it free to host and infinitely scalable.</p>
+          <div class="tech-stack">
+            <span class="tech-pill">Python 3.9</span>
+            <span class="tech-pill">scikit-learn</span>
+            <span class="tech-pill">NLTK</span>
+            <span class="tech-pill">Flask</span>
+            <span class="tech-pill">Netlify Functions</span>
+            <span class="tech-pill">TF-IDF</span>
+          </div>
+        </div>
+        <div class="about-stats">
+          <div class="big-stat"><span class="big-val">44K+</span><span class="big-lbl">Training Articles</span></div>
+          <div class="big-stat"><span class="big-val">98.7%</span><span class="big-lbl">Test Accuracy</span></div>
+          <div class="big-stat"><span class="big-val">50K</span><span class="big-lbl">TF-IDF Features</span></div>
+          <div class="big-stat"><span class="big-val">&lt;50ms</span><span class="big-lbl">Avg Response</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">📰 FakeGuard AI</div>
+      <p>Built with Python · scikit-learn · Flask · Netlify Functions</p>
+      <p>
+        Dataset:
+        <a href="https://www.kaggle.com/clmentbisaillon/fake-and-real-news-dataset" target="_blank" rel="noopener">
+          Kaggle Fake &amp; Real News Dataset
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- ══════════════════ TOAST ══════════════════ -->
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="static/js/main.js"></script>
+</body>
+</html>
