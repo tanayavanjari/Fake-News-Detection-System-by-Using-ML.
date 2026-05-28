@@ -1,0 +1,15 @@
+# netlify.toml
+# ─────────────────────────────────────────────────────────────────────────────
+# Netlify deployment configuration for TruthLens (static site — no backend).
+# Drop this file in the ROOT of your project folder before uploading to Netlify.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[build]
+  # Netlify will publish the root folder as-is (no build step needed)
+  publish = "."
+
+# Redirect all routes back to index.html (single-page app behaviour)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

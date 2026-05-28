@@ -1,32 +1,81 @@
-# Fake News Detection System using ML
+# TruthLens — Fake News Detector
+## Final Year Project
 
-## 📌 Project Overview
-This repository contains a Machine Learning project focused on identifying and classifying fake or misleading news articles. By leveraging Natural Language Processing (NLP) techniques and supervised classification models, the system analyzes text patterns to determine the authenticity of news sources.
-
----
-
-## 🛠️ Tech Stack & Tools
-* **Language:** Python
-* **Libraries:** Pandas, NumPy, Scikit-Learn, NLTK / Spacy
-* **Vectorization:** TF-IDF Vectorizer / CountVectorizer
-* **Data Visualization:** Matplotlib, Seaborn
+A fully client-side AI fake news detector. Works 100% in the browser — no server, no API keys, no backend required.
 
 ---
 
-## 🚀 Key Features
-* **Text Preprocessing:** Tokenization, stop-word removal, stemming, and lemmatization.
-* **Feature Extraction:** Converting textual data into numerical vectors using TF-IDF.
-* **Model Training:** Supervised learning algorithms (e.g., Logistic Regression, Passive Aggressive Classifier, Naive Bayes).
-* **Evaluation:** Performance metrics including Accuracy, Confusion Matrix, and Classification Report.
+## Files in This Project
+
+```
+├── index.html          ← Main webpage (open this in browser)
+├── netlify.toml        ← Netlify deployment config
+├── app.py              ← Optional: Flask server for local dev
+├── static/
+│   ├── script.js       ← All AI logic + button handlers
+│   └── style.css       ← All styling
+└── dataset/
+    └── news_sample.csv ← Sample data (reference only)
+```
 
 ---
 
-## 📂 Project Structure
-```text
-├── data/                  # Dataset files (train, test, or raw CSVs)
-├── notebooks/             # Jupyter notebooks for EDA and model experimentation
-├── src/
-│   ├── preprocess.py      # Text cleaning and preprocessing scripts
-│   └── train.py           # Model training and evaluation code
-├── requirements.txt       # List of required Python packages
-└── README.md              # Project documentation
+## Deploy on Netlify (Recommended)
+
+1. Go to [netlify.com](https://netlify.com) and sign in
+2. Click **"Add new site" → "Deploy manually"**
+3. Drag and drop the entire project folder onto the Netlify page
+4. Your site will be live instantly — **no build step needed**
+
+That's it. ✅
+
+---
+
+## Run Locally (Optional)
+
+**Option A — Just open the HTML file:**
+- Double-click `index.html` in your file explorer
+- Works immediately, no installation needed
+
+**Option B — Using Flask:**
+```bash
+pip install flask
+python app.py
+```
+Then open http://127.0.0.1:5000
+
+---
+
+## How the AI Works
+
+The detector runs entirely in the browser using linguistic pattern scoring:
+
+**FAKE signals detected:**
+- ALL-CAPS words (sensationalism)
+- Conspiracy phrases ("deep state", "cover-up", "wake up")
+- Emotional manipulation ("SHOCKING", "you won't believe")
+- Excessive `!!!` or `???` punctuation
+- Urgent sharing language ("share before they delete")
+- Vague sources ("sources say", "insiders claim")
+- Pseudoscience terms ("miracle cure", "big pharma")
+
+**REAL signals detected:**
+- Named credible sources (Reuters, BBC, WHO, CDC, NASA…)
+- Specific statistics and percentages
+- Formal reporting verbs ("announced", "confirmed", "published")
+- Institutional references (university, parliament, court…)
+- Date/time specificity
+- Titled people (President X, Dr. Y, Prof. Z)
+
+---
+
+## Fixes Applied (vs Original Broken Version)
+
+| Problem | Fix |
+|---|---|
+| `index.html` used Flask Jinja2 `{% if %}` tags — broken on Netlify | Replaced with plain HTML |
+| `script.js` called `fetch('/predict')` — no Flask server on Netlify | Replaced with browser-side AI engine |
+| Buttons used `onclick=` without event listeners — could fail silently | Added `addEventListener` for both buttons |
+| DOM accessed before page loaded — caused `null` errors | Wrapped everything in `DOMContentLoaded` |
+| `loadSample` / global functions not on `window` — `onclick` in HTML couldn't find them | Exposed via `window.analyseNews` and `window.clearInput` |
+| CSS `<link>` used Flask `url_for()` — broken outside Flask | Changed to plain `static/style.css` path |
